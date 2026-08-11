@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3DCreatCloud | POD-SRM云平台 - 让创意更方便快捷</title>
+    <meta name="description" content="珠海中粤民智能POD-SRM一站式SaaS按需生产云平台，3D创意云+AI创作，打通设计研发供产销全链路">
+    <!-- 二维码生成CDN -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 30px rgba(0,0,0,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --space-lg: 100px;
+            --space-md: 60px;
+            --space-sm: 30px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* 通用容器 */
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* 图片通用样式+丢失兜底 */
+        .img-full {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            display: block;
+            background:#f1f5f;
+            min-height:120px;
+        }
+        .img-card {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            display: block;
+            background:#f1f5f9;
+        }
+        .img-sm {
+            width: 100%;
+            height: 96px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            display: block;
+            background:#f1f5f9;
+        }
+        .img-logo {
+            height: 44px;
+            background:#f1f5f9;
+        }
+        .qr-box {
+            width: 160px;
+            height: 160px;
+            margin-top: 12px;
+            background:#f1f5f9;
+        }
+
+        /* 弹窗通用样式 */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.65);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-mask.show {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 680px;
+            position: relative;
+            overflow: hidden;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            color: #fff;
+            z-index: 2;
+            cursor: pointer;
+            text-shadow: 0 0 4px #000;
+        }
+        .modal-img {
+            width: 100%;
+            display: block;
+        }
+
+        /* 网格布局 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .grid-value {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        .btn-sm {
+            padding: 8px 20px;
+            font-size: 0.9rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.36);
+        }
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        .btn-white {
+            background: var(--white);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .btn-white:hover {
+            background: #f0f9ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        }
+        .btn-share {
+            border: 2px solid #94a3b8;
+            color: var(--gray);
+            background: transparent;
+        }
+        .btn-share:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 区块标题 */
+        .section-title {
+            text-align: center;
+            margin-bottom: var(--space-lg);
+        }
+        .section-title h2 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 12px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title h2::after {
+            content: '';
+            display: block;
+            width: 56px;
+            height: 4px;
+            background: var(--primary);
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.08rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .section-subtitle {
+            text-align: center;
+            margin: 60px 0 30px;
+        }
+        .section-subtitle h3 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+        .section-subtitle p {
+            color: var(--gray);
+        }
+
+        /* 说明区块 */
+        .block-desc {
+            background: #f1f5f9;
+            border-radius: var(--radius-md);
+            padding: 28px;
+            margin: 32px 0;
+        }
+        .block-desc h3 {
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+        .block-desc p {
+            color: var(--gray);
+            margin-top: 12px;
+        }
+
+        /* 导航栏 */
+        header {
+            background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(14px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        header.scroll-active {
+            background: #fff;
+            box-shadow: var(--shadow-md);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 82px;
+        }
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-text {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.4px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.25s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -6px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.25s ease;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .auth-buttons {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+        .menu-btn {
+            display: none;
+            font-size: 28px;
+            color: var(--dark);
+            cursor: pointer;
+        }
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 82px;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+        .mobile-nav.open {
+            display: block;
+        }
+        .mobile-nav ul {
+            list-style: none;
+        }
+        .mobile-nav li {
+            margin: 16px 0;
+        }
+        .mobile-nav a {
+            font-size: 1.1rem;
+            color: var(--dark);
+            text-decoration: none;
+            display: block;
+            padding: 4px 0;
+        }
+
+        /* 轮播图样式 */
+        .slider-box {
+            width: 100%;
+            height: 440px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            margin-bottom: 40px;
+        }
+        .slider-wrap {
+            width: 100%;
+            height: 100%;
+        }
+        .slide-item {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .slide-item::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,40,120,0.45);
+            z-index: 1;
+        }
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            max-width: 860px;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+        }
+        .slide-item.active {
+            opacity: 1;
+            z-index: 2;
+        }
+        .slide-content h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        .slide-content p {
+            font-size: 1.25rem;
+            margin-bottom: 32px;
+        }
+        .slide-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .slide-arrow {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(6px);
+            color: #fff;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .slide-arrow:hover {
+            background: rgba(255,255,255,0.55);
+        }
+        .prev-arrow {
+            left: 30px;
+        }
+        .next-arrow {
+            right: 30px;
+        }
+        .slider-dots-wrap {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .slider-dot.active {
+            background: #fff;
+            width: 36px;
+        }
+        @media (max-width:768px) {
+            .slider-box {
+                height: 320px;
+            }
+            .slide-content h1 {
+                font-size: 2rem;
+            }
+            .slide-content p {
+                font-size: 1rem;
+            }
+            .slide-arrow {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        /* 首屏Hero */
+        .hero {
+            padding: 0 0 var(--space-lg);
+            background: var(--white);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-tags {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+            padding: 7px 18px;
+            border-radius: 999px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            border: 1px solid rgba(37, 99, 0.12);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 820px;
+            margin: 0 auto 2.4rem;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+
+        /* 通用内容区块 */
+        .features {
+            padding: var(--space-lg) 0;
+            background-color: var(--white);
+        }
+        .value-prop {
+            padding: var(--space-lg) 0;
+            background-color: var(--light);
+        }
+        .card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--light-gray);
+            transition: all 0.35s ease;
+            opacity: 0;
+            transform: translateY(36px);
+        }
+        .card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(37, 99, 235, 0.18);
+        }
+        .card-icon {
+            width: 68px;
+            height: 68px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        .card h3 {
+            margin-bottom: 16px;
+            font-size: 1.38rem;
+            color: var(--dark);
+        }
+        .card p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        .card ul {
+            list-style: none;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        .card ul li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 24px;
+            font-size: 0.95rem;
+        }
+        .card ul li::before {
+            content: "✓";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(37, 99, 0.1);
+            display: flex;
+            align-items: center;
+            font-size: 0.7rem;
+            top: 2px;
+        }
+        .value-item {
+            background: var(--white);
+            padding: 26px;
+            border-radius: var(--radius-md);
+            border-left: 5px solid var(--primary);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(28px);
+        }
+        .value-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .value-item:hover {
+            transform: scale(1.02);
+        }
+        .value-item h4 {
+            margin-bottom: 10px;
+            font-size: 1.22rem;
+            color: var(--dark);
+        }
+        .value-item p {
+            font-size: 0.96rem;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* 合作伙伴 */
+        .partner-case-img {
+            margin-top: 32px;
+            text-align: center;
+        }
+        .partner-case-img img {
+            width: 100%;
+            max-width: 960px;
+            height: auto;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            display: block;
+            margin: 0 auto;
+            background:#f1f5f9;
+            min-height:120px;
+        }
+
+        /* CTA区块 */
+        .cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: var(--space-lg) 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 280px;
+            height: 280px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            transform: translate(30%, 30%);
+        }
+        .cta .container {
+            position: relative;
+            z-index: 1;
+        }
+        .cta h2 {
+            font-size: 2.6rem;
+            margin-bottom: 16px;
+        }
+        .cta p {
+            opacity: 0.92;
+            font-size: 1.15rem;
+            max-width: 760px;
+            margin: 0 auto 32px;
+            white-space: nowrap;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta .btn-share {
+            border-color: #fff;
+            color: #fff;
+        }
+        .cta .btn-share:hover {
+            background: #fff;
+            color: var(--primary);
+        }
+        @media (max-width:768px) {
+            .cta p {
+                white-space: normal;
+            }
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--dark);
+            color: #94a3b8;
+            padding: 80px 0 32px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 64px;
+        }
+        .footer-col h4 {
+            color: var(--white);
+            margin-bottom: 24px;
+            font-size: 1.2rem;
+            position: relative;
+            display: inline-block;
+        }
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 32px;
+            height: 2px;
+            background: var(--primary);
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col li {
+            margin-bottom: 12px;
+        }
+        .footer-col a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+        .footer-col a:hover {
+            color: var(--white);
+            padding-left: 4px;
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 32px;
+            border-top: 1px solid #334155;
+            font-size: 0.88rem;
+        }
+
+        /* 分享弹窗样式 */
+        .share-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .share-mask.show {
+            display: flex;
+        }
+        .share-box {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 560px;
+            padding: 36px;
+            position: relative;
+        }
+        .share-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .share-close:hover {
+            color: var(--dark);
+        }
+        .share-box h3 {
+            font-size: 1.6rem;
+            margin-bottom: 24px;
+            color: var(--dark);
+        }
+        .share-link-wrap {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        .share-link-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .share-link-input:focus {
+            border-color: var(--primary);
+        }
+        .share-platforms {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom:24px;
+        }
+        .share-item {
+            flex: 1;
+            min-width: 110px;
+            text-align: center;
+            padding: 14px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .share-item:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+        .share-item i {
+            font-size: 26px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .tip-copy {
+            margin-top: 16px;
+            color: #10b981;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .tip-copy.show {
+            display: block;
+        }
+        .qrcode-wrap{
+            text-align:center;
+            margin-top:20px;
+        }
+        #qrcode{
+            width:220px;height:220px;margin:0 auto 10px;
+        }
+        .qrcode-tip{
+            color:var(--gray);
+            font-size:0.9rem;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 1024px) {
+            .grid-value {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+            .menu-btn {
+                display: block;
+            }
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            .cta h2 {
+                font-size: 2rem;
+            }
+            .img-card {
+                height: 220px;
+            }
+            .hero {
+                padding: 140px 0 70px;
+            }
+            .share-platforms {
+                gap: 10px;
+            }
+            .share-item {
+                min-width: 90px;
+            }
+        }
+        @media (max-width: 480px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .share-link-wrap {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 弹窗遮罩 -->
+<div class="modal-mask" id="loginModal">
+    <div class="modal-box">
+        <span class="modal-close" id="loginClose">✕</span>
+        <img class="modal-img" src="img/login.png" alt="登录表单" onerror="this.style.display='none'">
+    </div>
+</div>
+<div class="modal-mask" id="regModal">
+    <div class="modal-box">
+        <span class="modal-close" id="regClose">✕</span>
+        <img class="modal-img" src="img/register.png" alt="注册表单" onerror="this.style.display='none'">
+    </div>
+</div>
+<div class="modal-mask" id="contactModal">
+    <div class="modal-box">
+        <span class="modal-close" id="contactClose">✕</span>
+        <img class="modal-img" src="img/contact.png" alt="联系申请表单" onerror="this.style.display='none'">
+    </div>
+</div>
+
+<!-- 分享弹窗 -->
+<div class="share-mask" id="shareMask">
+    <div class="share-box">
+        <span class="share-close" id="shareClose">✕</span>
+        <h3>分享本平台页面给好友</h3>
+        <div class="share-link-wrap">
+            <input class="share-link-input" id="shareUrl" readonly>
+            <button class="btn btn-primary btn-sm" id="copyBtn">复制链接</button>
+        </div>
+        <p class="tip-copy" id="copyTip">链接复制成功，粘贴发给好友即可打开页面！</p>
+        <div class="share-platforms">
+            <div class="share-item" id="shareNative">
+                <i>📱</i>
+                <span>系统分享</span>
+            </div>
+            <div class="share-item" id="shareQQ">
+                <i>🐧</i>
+                <span>QQ好友</span>
+            </div>
+            <div class="share-item" id="shareWeibo">
+                <i>📢</i>
+                <span>微博</span>
+            </div>
+            <div class="share-item" id="shareCopyAll">
+                <i>📋</i>
+                <span>复制链接</span>
+            </div>
+        </div>
+        <div class="qrcode-wrap">
+            <div id="qrcode"></div>
+            <p class="qrcode-tip">微信扫码直接打开页面分享</p>
+        </div>
+    </div>
+</div>
+
+<!-- 导航栏 -->
+<header id="navbar">
+    <div class="container">
+        <nav>
+            <div class="logo-wrap">
+                <img class="img-logo" src="img/logo_podsrm.png" alt="POD-SRM LOGO" onerror="this.style.display='none'">
+                <span class="logo-text">3DCreatCloud</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#features">产品服务</a></li>
+                <li><a href="#ecosystem">协同生态</a></li>
+                <li><a href="#value">平台价值</a></li>
+                <li><a href="#case">平台演示</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-outline btn-sm" id="openLoginBtn">登录</button>
+                <button class="btn btn-primary btn-sm" id="openRegBtn">注册</button>
+            </div>
+            <div class="menu-btn" id="menuBtn">☰</div>
+        </nav>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+        <div class="container">
+            <ul>
+                <li><a href="#home">首页</a></li>
+                <li><a href="#features">产品服务</a></li>
+                <li><a href="#ecosystem">协同生态</a></li>
+                <li><a href="#value">平台价值</a></li>
+                <li><a href="#case">平台演示</a></li>
+                <li><a href="#contact">联系我们</a></li>
+                <li style="margin-top:24px;display:flex;gap:12px;">
+                    <button class="btn btn-outline btn-sm" id="openLoginBtnMob">登录</button>
+                    <button class="btn btn-primary btn-sm" id="openRegBtnMob">注册</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!-- 首屏 -->
+<section id="home" class="hero">
+    <div class="slider-box" id="sliderBox">
+        <div class="slider-wrap">
+            <div class="slide-item active" style="background-image: url('img/slide_01.jpg');">
+                <div class="slide-content">
+                    <h1>3DCreatCloud POD-SRM云平台</h1>
+                    <p>一站式服装按需生产SaaS系统，AI设计+3D可视化，零库存柔性供应链</p>
+                    <div class="slide-buttons">
+                        <button class="btn btn-white" id="openContactBtn1">免费申请演示</button>
+                        <a href="#case" class="btn btn-outline" style="border-color:#fff;color:#fff;">查看操作演示</a>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-item" style="background-image: url('img/slide_02.jpg');">
+                <div class="slide-content">
+                    <h1>AI智能创作与3D可视化</h1>
+                    <p>七大资源库统一管理款式、面料、印花、模板素材，实时生成3D成衣</p>
+                    <div class="slide-buttons">
+                        <a href="#features" class="btn btn-white">了解功能</a>
+                        <a href="#ecosystem" class="btn btn-outline" style="border-color:#fff;color:#fff;">应用场景</a>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-item" style="background-image: url('img/slide_03.jpg');">
+                <div class="slide-content">
+                    <h1>按需生产，零库存S2B2C</h1>
+                    <p>打通设计师、工厂、品牌、消费者，小单快反全球履约</p>
+                    <div class="slide-buttons">
+                        <a href="#value" class="btn btn-white">平台价值</a>
+                        <button class="btn btn-outline" style="border-color:#fff;color:#fff;" id="openContactBtn2">联系我们</button>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-arrow prev-arrow" id="prevSlide">‹</div>
+            <div class="slide-arrow next-arrow" id="nextSlide">›</div>
+            <div class="slider-dots-wrap">
+                <span class="slider-dot active" data-index="0"></span>
+                <span class="slider-dot" data-index="1"></span>
+                <span class="slider-dot" data-index="2"></span>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="hero-tags">
+            <span class="tag">POD-SRM平台</span>
+            <span class="tag">AI智能创作</span>
+            <span class="tag">按需生产</span>
+            <span class="tag">零库存S2B2C</span>
+            <span class="tag">跨境DTC出海</span>
+        </div>
+        <p>珠海中粤民智能3DCreatCloud，一站式SaaS在线POD-SRM按需生产数字化云平台，七大资源库+AI智能创作，打通设计师/工厂/品牌/消费者全产业链，零库存快速变现创意。官网：pod-srm.com</p>
+        <div class="hero-buttons">
+            <button class="btn btn-primary" id="openContactBtn3">申请体验</button>
+            <a href="#case" class="btn btn-outline">观看平台演示</a>
+            <button class="btn btn-share" id="openShareBtn">分享页面</button>
+        </div>
+
+        <div class="block-desc">
+            <h3>3D创意云整体协同架构</h3>
+            <img class="img-full" src="img/arch.png" alt="3D创意云协同架构图" onerror="this.style.display='none'">
+            <p>云端核心承载七大资源库：款式云库、部件云库、材质纹理云库、图文云库、模板云库、数字色卡云库、字体云库；外部接入AI智能创作模块、企业协同生态，连接制造商、供应商、品牌商、设计师，实现全链路数字化协同。</p>
+        </div>
+        <div class="block-desc">
+            <h3>服装按需生产全流程</h3>
+            <img class="img-full" src="img/produce_flow.png" alt="按需生产流程图" onerror="this.style.display='none'">
+            <p>空白成衣素材输入→AI/2D3D设计印花→数码打印设备生产→成衣后整→质检入库→发货物流→对账结算，完整POD按需生产闭环，无需提前囤货。</p>
+        </div>
+    </div>
+</section>
+
+<!-- 核心功能 -->
+<section id="features" class="features">
+    <div class="container">
+        <div class="section-title">
+            <h2>核心功能与七大资源库</h2>
+            <p>融合3D可视化、AI生成、SRM供应链管理，覆盖服装全品类定制生产</p>
+        </div>
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-icon">🎨</div>
+                <h3>3D创意云 & AI创作引擎</h3>
+                <ul>
+                    <li>款式/部件/材质/图文/模板/色卡/字体七大资源库</li>
+                    <li>AI文生图、图生图、文图生成短视频素材</li>
+                    <li>2D图纸与3D模特实时同步渲染</li>
+                    <li>支持DXF纸样导入、面料贴图仿真</li>
+                </ul>
+                <img class="img-card" src="img/material_lib.png" alt="面料材质库预览" onerror="this.style.display='none'">
+            </div>
+            <div class="card">
+                <div class="card-icon">🏭</div>
+                <h3>POD-SRM企业协同生态</h3>
+                <ul>
+                    <li>设计师/工厂/供应商/品牌商/代理商全入驻</li>
+                    <li>S2B2C去中间化商业模式，OEM/ODM全覆盖</li>
+                    <li>VMI寄售库存、多工厂备份防断供</li>
+                    <li>线上打样、审版、对账、结算一体化</li>
+                </ul>
+                <div class="grid-4">
+                    <img class="img-sm" src="img/role_designer.png" alt="设计师" onerror="this.style.display='none'">
+                    <img class="img-sm" src="img/role_factory.png" alt="生产工厂" onerror="this.style.display='none'">
+                    <img class="img-sm" src="img/role_brand.png" alt="品牌商家" onerror="this.style.display='none'">
+                    <img class="img-sm" src="img/role_customer.png" alt="终端消费者" onerror="this.style.display='none'">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">🚀</div>
+                <h3>智能订单与全球履约</h3>
+                <ul>
+                    <li>淘宝/抖音/独立站/小程序多渠道自动接单</li>
+                    <li>订单智能分派、柔性小单快反生产</li>
+                    <li>全链路生产进度可视化、质检异常告警</li>
+                    <li>跨境DTC分布式仓库直发，缩短交期</li>
+                </ul>
+                <img class="img-card" src="img/backend_shop.png" alt="平台商品选品后台" onerror="this.style.display='none'">
+            </div>
+        </div>
+        <div class="section-subtitle">
+            <h3>平台支持全品类3D服饰样品</h3>
+            <p>运动服、内衣、卫衣、瑜伽裤、户外服饰一站式定制渲染</p>
+        </div>
+        <div class="grid-4">
+            <img class="img-card" src="img/cloth_01.png" alt="立领户外外套" onerror="this.style.display='none'">
+            <img class="img-card" src="img/cloth_02.png" alt="运动美背内衣" onerror="this.style.display='none'">
+            <img class="img-card" src="img/cloth_03.png" alt="爱心印花瑜伽套装" onerror="this.style.display='none'">
+            <img class="img-card" src="img/cloth_04.png" alt="拼接针织长袖" onerror="this.style.display='none'">
+            <img class="img-card" src="img/cloth_05.png" alt="条纹骑行短袖" onerror="this.style.display='none'">
+            <img class="img-card" src="img/cloth_06.png" alt="渐变休闲上衣" onerror="this.style.display='none'">
+            <img class="img-card" src="img/cloth_07.png" alt="肌理速干上衣" onerror="this.style.display='none'">
+            <img class="img-card" src="img/cloth_08.png" alt="流体印花瑜伽裤" onerror="this.style.display='none'">
+        </div>
+    </div>
+</section>
+
+<!-- 平台价值 -->
+<section id="value" class="value-prop">
+    <div class="container">
+        <div class="section-title">
+            <h2>平台五大核心战略价值</h2>
+            <p>打造柔性供应链护城河，实现降本、提效、增收、抗周期、长期差异化</p>
+        </div>
+        <div class="grid-value">
+            <div class="value-item">
+                <h4>战略壁垒价值</h4>
+                <p>绑定优质工厂锁定产能供给，构建独家供应链护城河，支撑跨品类扩张与跨境出海布局，摆脱低价内卷竞争。</p>
+            </div>
+            <div class="value-item">
+                <h4>供需生态价值</h4>
+                <p>供需共生共赢体系，多工厂备份规避断供风险，品牌与工厂利益绑定，提升整条产业链抗冲击韧性。</p>
+            </div>
+            <div class="value-item">
+                <h4>数据经营价值</h4>
+                <p>沉淀独家款式/产销数据资产，AI预测爆款款式，指导设计与备货，形成品牌长期差异化竞争壁垒。</p>
+            </div>
+            <div class="value-item">
+                <h4>风控降本价值</h4>
+                <p>VMI原料寄售模式压降库存成本，全链路溯源减少售后损耗，按需生产杜绝滞销积压，大幅降低经营风险。</p>
+            </div>
+            <div class="value-item">
+                <h4>履约效率价值</h4>
+                <p>自动派单+线上协同打样/对账/发货，新品上新周期缩短70%，小批量快速交付，适配电商快速迭代需求。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 解决方案 -->
+<section id="ecosystem" class="features">
+    <div class="container">
+        <div class="section-title">
+            <h2>行业解决方案与应用场景</h2>
+            <p>在线DIY定制、3D可视化展示、开放SDK/API全渠道嵌入</p>
+        </div>
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-icon">👕</div>
+                <h3>终端在线选品定制</h3>
+                <p>覆盖T恤、卫衣、帽子、包袋、水杯全品类，客户自由自定义颜色、图案、文字、印花位置、面料纹理，实时预览3D成品效果。</p>
+                <img class="img-card" src="img/design_editor.png" alt="2D&3D同步在线设计编辑器" onerror="this.style.display='none'">
+            </div>
+            <div class="card">
+                <div class="card-icon">👁️</div>
+                <h3>3D全视角可视化渲染</h3>
+                <p>2D版型同步生成高精度3D服装模型，多角度真实面料仿真展示，大幅降低买家退货率，提升线上商品转化效率。</p>
+                <img class="img-card" src="img/3d_preview.png" alt="多品类3D成品实时预览" onerror="this.style.display='none'">
+            </div>
+            <div class="card">
+                <div class="card-icon">🔌</div>
+                <h3>开放SDK/API扩展服务</h3>
+                <p>独立部署3D产品配置器，支持嵌入官网、小程序、APP、ERP/进销存系统，打通自有私域流量商城。</p>
+                <ul>
+                    <li>云店商城、抖音、跨境独立站适配</li>
+                    <li>全款式/订单/素材接口开放</li>
+                    <li>企业私有部署、数据独立存储</li>
+                </ul>
+            </div>
+        </div>
+        <div class="section-subtitle">
+            <h3>平台海量图文素材资源库</h3>
+            <p>刺绣图案、潮流印花、艺术字体随心调用</p>
+        </div>
+        <div class="grid-3">
+            <img class="img-card" src="img/pattern_embroid.png" alt="国风刺绣花卉素材" onerror="this.style.display='none'">
+            <img class="img-card" src="img/pattern_street.png" alt="街头潮流印花图案" onerror="this.style.display='none'">
+            <img class="img-card" src="img/font_art.png" alt="英文艺术装饰字体" onerror="this.style.display='none'">
+        </div>
+    </div>
+</section>
+
+<!-- 平台演示 -->
+<section id="case" class="features" style="background:#f8fafc;">
+    <div class="container">
+        <div class="section-title">
+            <h2>POD-SRM平台操作演示</h2>
+            <p>选品库、2D&3D互通设计、全业务流程可视化</p>
+        </div>
+        <div class="grid-2">
+            <div>
+                <h4 style="text-align:center;margin-bottom:16px;font-size:1.2rem;">商品选品后台界面</h4>
+                <img class="img-full" src="img/demo_backend.png" alt="商品库操作面板" onerror="this.style.display='none'">
+            </div>
+            <div>
+                <h4 style="text-align:center;margin-bottom:16px;font-size:1.2rem;">2D版型+3D实时设计工作台</h4>
+                <img class="img-full" src="img/demo_3dedit.png" alt="左右分栏设计工作台" onerror="this.style.display='none'">
+            </div>
+        </div>
+        <div class="block-desc">
+            <h3>完整业务流程说明</h3>
+            <p>选品中心→2D/3D设计→订单池自动接单→派单中心分配工厂→采购面料→生产加工→质检入库→发货物流→对账结算，全线上无纸化协同，无实物库存压力。</p>
+        </div>
+        <div style="margin-top:48px;" class="grid-2">
+            <div>
+                <img class="img-full" src="img/business_match.jpg" alt="适配平台业务场景" onerror="this.style.display='none'">
+            </div>
+            <div style="display:flex;flex-direction:column;justify-content:center;">
+                <h3 style="font-size:1.5rem;margin-bottom:20px;color:var(--dark);">如果您的业务符合以下任意一种情况，POD-SRM系统方案将是您的理想选择：</h3>
+                <ul style="list-style:none;gap:22px;display:flex;flex-direction:column;">
+                    <li style="font-size:1.1rem;line-height:1.7;color:var(--dark);padding-left:26px;position:relative;">
+                        <span style="position:absolute;left:0;color:var(--primary);font-weight:bold;">1、</span>
+                        正转型独立站、希望摆脱第三方平台限制，搭建私域流量池的卖家；
+                    </li>
+                    <li style="font-size:1.1rem;line-height:1.7;color:var(--dark);padding-left:26px;position:relative;">
+                        <span style="position:absolute;left:0;color:var(--primary);font-weight:bold;">2、</span>
+                        拥有自己供应链管理、期望直接触达C端消费者实现“F2C”转型的工厂；
+                    </li>
+                    <li style="font-size:1.1rem;line-height:1.7;color:var(--dark);padding-left:26px;position:relative;">
+                        <span style="position:absolute;left:0;color:var(--primary);font-weight:bold;">3、</span>
+                        现有SAAS工具功能受限、无法满足复杂个性化定制需求；
+                    </li>
+                    <li style="font-size:1.1rem;line-height:1.7;color:var(--dark);padding-left:26px;position:relative;">
+                        <span style="position:absolute;left:0;color:var(--primary);font-weight:bold;">4、</span>
+                        需将核心用户数据与设计资产私有化部署、注重数据安全的企业。
+                    </li>
+                </ul>
+                <p style="margin-top:24px;font-size:1.15rem;font-weight:600;color:var(--primary);text-align:right;">POD-SRM系统方案或许就是那块最坚实的基石</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 合作伙伴 -->
+<section class="features">
+    <div class="container">
+        <div class="section-title">
+            <h2>生态合作伙伴</h2>
+            <p>全国服装工厂、面料商、品牌商家共建S2B2C供应链</p>
+        </div>
+        <div class="partner-case-img">
+            <img src="img/partner_case.jpg" alt="生态合作伙伴案例展示" onerror="this.style.display='none'">
+        </div>
+    </div>
+</section>
+
+<!-- CTA咨询区块 -->
+<section class="cta">
+    <div class="container">
+        <h2>开启企业数字化按需生产云平台</h2>
+        <p>免费演示平台全功能，获取专属供应链落地方案，零门槛搭建自有POD-SRM系统</p>
+        <div class="cta-buttons">
+            <button class="btn btn-white" id="openContactBtn4">立即免费咨询体验</button>
+            <button class="btn btn-share" id="openShareBtn2">分享页面给伙伴</button>
+        </div>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer id="contact">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>3DCreatCloud POD-SRM</h4>
+                <p>珠海中粤民智能科技有限公司</p>
+                <p style="margin-top:12px;font-size:0.9rem;color:#64748b;">官网：pod-srm.com</p>
+                <p style="margin-top:6px;">让创意更方便快捷</p>
+                <img class="qr-box" src="img/wechat_qr.png" alt="商务微信二维码" onerror="this.style.display='none'">
+            </div>
+            <div class="footer-col">
+                <h4>产品服务</h4>
+                <ul>
+                    <li><a href="#features">3D创意云资源库</a></li>
+                    <li><a href="#features">AI智能创作工具</a></li>
+                    <li><a href="#ecosystem">企业协同SRM</a></li>
+                    <li><a href="#ecosystem">SDK/API开放服务</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>支持中心</h4>
+                <ul>
+                    <li><a href="#">帮助中心</a></li>
+                    <li><a href="#">API开发文档</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                    <li><a href="#">用户服务条款</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>联系我们</h4>
+                <ul>
+                    <li>首席技术顾问：刘先生</li>
+                    <li>咨询/微信：13411648381</li>
+                    <li>公司地址：珠海市</li>
+                    <li>商务邮箱：360737020@qq.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2026 珠海中粤民智能科技有限公司 版权所有 | POD-SRM® 注册商标 | 数据保护声明</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// 导航滚动变色
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+    if(window.scrollY > 80) navbar.classList.add('scroll-active');
+    else navbar.classList.remove('scroll-active');
+})
+
+// 移动端汉堡菜单
+const menuBtn = document.getElementById('menuBtn');
+const mobileNav = document.getElementById('mobileNav');
+menuBtn.addEventListener('click', () => {
+    mobileNav.classList.toggle('open');
+    menuBtn.textContent = mobileNav.classList.contains('open') ? '✕' : '☰';
+})
+document.querySelectorAll('.mobile-nav a').forEach(link=>{
+    link.addEventListener('click',()=>{
+        mobileNav.classList.remove('open');
+        menuBtn.textContent = '☰';
+    })
+})
+
+// ========== 弹窗逻辑 全部修复无变量错误 ==========
+// 登录弹窗
+const loginModal = document.getElementById('loginModal');
+const openLoginBtn = document.getElementById('openLoginBtn');
+const openLoginBtnMob = document.getElementById('openLoginBtnMob');
+const loginClose = document.getElementById('loginClose');
+function openLogin(){ loginModal.classList.add('show'); }
+function closeLogin(){ loginModal.classList.remove('show'); }
+openLoginBtn.addEventListener('click', openLogin);
+openLoginBtnMob.addEventListener('click', openLogin);
+loginClose.addEventListener('click', closeLogin);
+loginModal.addEventListener('click', e=>{
+    if(e.target === loginModal) closeLogin();
+})
+
+// 注册弹窗
+const regModal = document.getElementById('regModal');
+const openRegBtn = document.getElementById('openRegBtn');
+const openRegBtnMob = document.getElementById('openRegBtnMob');
+const regClose = document.getElementById('regClose');
+function openReg(){ regModal.classList.add('show'); }
+function closeReg(){ regModal.classList.remove('show'); }
+openRegBtn.addEventListener('click', openReg);
+openRegBtnMob.addEventListener('click', openReg);
+regClose.addEventListener('click', closeReg);
+regModal.addEventListener('click', e=>{
+    if(e.target === regModal) closeReg();
+})
+
+// 申请体验弹窗（修复变量名openContactBtn4）
+const contactModal = document.getElementById('contactModal');
+const openContactBtn1 = document.getElementById('openContactBtn1');
+const openContactBtn2 = document.getElementById('openContactBtn2');
+const openContactBtn3 = document.getElementById('openContactBtn3');
+const openContactBtn4 = document.getElementById('openContactBtn4');
+const contactClose = document.getElementById('contactClose');
+function openContact(){ contactModal.classList.add('show'); }
+function closeContact(){ contactModal.classList.remove('show'); }
+openContactBtn1.onclick = openContact;
+openContactBtn2.onclick = openContact;
+openContactBtn3.onclick = openContact;
+openContactBtn4.onclick = openContact;
+contactClose.addEventListener('click', closeContact);
+contactModal.addEventListener('click', e=>{
+    if(e.target === contactModal) closeContact();
+})
+
+// 滚动渐入动画
+const animateBox = document.querySelectorAll('.card, .value-item');
+function checkShow() {
+    const winH = window.innerHeight;
+    animateBox.forEach((el, idx) => {
+        const top = el.getBoundingClientRect().top;
+        if(top < winH - 100) {
+            setTimeout(()=>{
+                el.classList.add('show');
+            }, idx * 60)
+        }
+    })
+}
+window.addEventListener('scroll', checkShow);
+
+// 轮播完整逻辑
+const slideItems = document.querySelectorAll('.slide-item');
+const dots = document.querySelectorAll('.slider-dot');
+const prevBtn = document.getElementById('prevSlide');
+const nextBtn = document.getElementById('nextSlide');
+const sliderBox = document.getElementById('sliderBox');
+let currentIndex = 0;
+const slideCount = slideItems.length;
+
+function renderSlide(index) {
+    slideItems[currentIndex].classList.remove('active');
+    dots[currentIndex].classList.remove('active');
+    currentIndex = index;
+    slideItems[currentIndex].classList.add('active');
+    dots[currentIndex].classList.add('active');
+}
+function nextSlide() {
+    const idx = (currentIndex + 1) % slideCount;
+    renderSlide(idx);
+}
+function prevSlide() {
+    const idx = (currentIndex - 1 + slideCount) % slideCount;
+    renderSlide(idx);
+}
+nextBtn.onclick = nextSlide;
+prevBtn.onclick = prevSlide;
+dots.forEach(dot=>{
+    dot.onclick = ()=>renderSlide(Number(dot.dataset.index));
+})
+let autoTimer = setInterval(nextSlide,5000);
+sliderBox.onmouseenter = ()=>clearInterval(autoTimer);
+sliderBox.onmouseleave = ()=>autoTimer = setInterval(nextSlide,5000);
+
+// 分享弹窗 修复双分享按钮变量冲突
+const pageUrl = window.location.href;
+const pageTitle = document.title;
+const pageDesc = document.querySelector('meta[name="description"]').content;
+const encodeUrl = encodeURIComponent(pageUrl);
+const encodeTitle = encodeURIComponent(pageDesc);
+
+const shareMask = document.getElementById('shareMask');
+const shareClose = document.getElementById('shareClose');
+const openShareBtn = document.getElementById('openShareBtn');
+const openShareBtn2 = document.getElementById('openShareBtn2');
+const copyBtn = document.getElementById('copyBtn');
+const shareUrl = document.getElementById('shareUrl');
+const copyTip = document.getElementById('copyTip');
+const shareNative = document.getElementById('shareNative');
+const shareQQ = document.getElementById('shareQQ');
+const shareWeibo = document.getElementById('shareWeibo');
+const shareCopyAll = document.getElementById('shareCopyAll');
+
+function openShare() {
+    shareMask.classList.add('show');
+    copyTip.classList.remove('show');
+    shareUrl.value = pageUrl;
+}
+function closeShare() {
+    shareMask.classList.remove('show');
+}
+// 两个分享按钮分别绑定，无重复赋值
+openShareBtn.addEventListener('click', openShare);
+openShareBtn2.addEventListener('click', openShare);
+shareClose.addEventListener('click', closeShare);
+shareMask.addEventListener('click', e=>{if(e.target === shareMask) closeShare();})
+
+// 复制链接函数完整闭合无截断
+async function copyUrl() {
+    try {
+        await navigator.clipboard.writeText(pageUrl);
+        copyTip.classList.add('show');
+        setTimeout(()=>copyTip.classList.remove('show'),2000);
+    } catch(err) {
+        shareUrl.select();
+        document.execCommand('copy');
+        copyTip.classList.add('show');
+        setTimeout(()=>copyTip.classList.remove('show'),2000);
+    }
+}
+copyBtn.onclick = copyUrl;
+shareCopyAll.onclick = copyUrl;
+
+shareNative.onclick = async ()=>{
+    if(navigator.share){
+        try{
+            await navigator.share({title:pageTitle,text:pageDesc,url:pageUrl})
+        }catch(e){
+            await copyUrl();
+            alert('分享取消，链接已复制');
+        }
+    }else{
+        await copyUrl();
+        alert('当前设备不支持系统分享，链接已复制');
+    }
+}
+shareQQ.onclick = ()=>{
+    const target = `https://connect.qq.com/widget/shareqq/index?url=${encodeUrl}&title=${encodeTitle}`;
+    window.open(target,'_blank','width=620,height=660,left=300,top=80');
+}
+shareWeibo.onclick = ()=>{
+    const target = `https://service.weibo.com/share.php?url=${encodeUrl}&title=${encodeTitle}`;
+    window.open(target,'_blank','width=640,height=720,left=260,top=60');
+}
+
+// 页面加载初始化
+window.onload = ()=>{
+    checkShow();
+    new QRCode(document.getElementById("qrcode"),{text:pageUrl,width:220,height:220});
+}
+</script>
+</body>
+</html>
